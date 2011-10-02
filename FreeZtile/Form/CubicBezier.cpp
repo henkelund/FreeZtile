@@ -29,6 +29,7 @@
 #include "CubicBezier.h"
 #include <algorithm>
 #include <cmath>
+#include <float.h>
 
 namespace FreeZtile {
 
@@ -38,13 +39,10 @@ namespace FreeZtile {
         _ex(1.f),   _ey(0.f),
         _ax(0.25f), _ay(0.f),
         _bx(0.75f), _by(0.f),
-        _c0x(0.f),  _c0y(0.f),
-        _c1x(0.f),  _c1y(0.f),
-        _c2x(0.f),  _c2y(0.f),
-        _c3x(0.f),  _c3y(0.f),
-        _xTolerance(0.001)
+        _c0y(0.f), _c1y(0.f),
+        _c2y(0.f), _c3y(0.f),
+        _tolerance(1E-08)
     {
-        _reCalcCs();
     }
 
     float CubicBezier::startY()
@@ -55,7 +53,6 @@ namespace FreeZtile {
     void CubicBezier::setStartY(float y)
     {
         _sy = y;
-        _reCalcCs();
     }
 
     float CubicBezier::endY()
@@ -66,7 +63,6 @@ namespace FreeZtile {
     void CubicBezier::setEndY(float y)
     {
         _ey = y;
-        _reCalcCs();
     }
 
     FreeZtile::PointF CubicBezier::a()
@@ -79,7 +75,6 @@ namespace FreeZtile {
         _ay = y;
         // assert between startX and bX
         _ax = std::min(_bx, std::max(_sx, x));
-        _reCalcCs();
     }
 
     FreeZtile::PointF CubicBezier::b()
@@ -92,30 +87,16 @@ namespace FreeZtile {
         _by = y;
         // assert between startX and bX
         _bx = std::min(_ex, std::max(_ax, x));
-        _reCalcCs();
     }
 
     float CubicBezier::tolerance()
     {
-        return _xTolerance;
+        return _tolerance;
     }
 
     void CubicBezier::setTolerance(float tolerance)
     {
-        _xTolerance = std::min(0.5f, std::max(0.0000001f, tolerance));
-    }
-
-    void CubicBezier::_reCalcCs()
-    {
-        //TODO: We need to assert thread safety between this function and xsToYs()
-        _c0x = _sx;
-        _c0y = _sy;
-        _c1x = (3*_ax)-(3*_sx);
-        _c1y = (3*_ay)-(3*_sy);
-        _c2x = (3*_sx)-(2*(3*_ax))+(3*_bx);
-        _c2y = (3*_sy)-(2*(3*_ay))+(3*_by);
-        _c3x = _ex-_sx+(3*_ax)-(3*_bx);
-        _c3y = _ey-_sy+(3*_ay)-(3*_by);
+        _tolerance = std::min(0.5f, std::max(FLT_MIN*2, tolerance));
     }
 
     void CubicBezier::xsToYs(
@@ -123,26 +104,55 @@ namespace FreeZtile {
             FreeZtile::SampleValue ys[],
             unsigned int size)
     {
-        float x, t, up, lo, ax;
+        _c0y = _sy;
+        _c1y = (3*_ay)-(3*_sy);
+        _c2y = (3*_sy)-(2*(3*_ay))+(3*_by);
+        _c3y = _ey-_sy+(3*_ay)-(3*_by);
+
+        float   t,
+                t2,     // pow(t, 2)
+                ti,     // inverted t
+                ti2,    // pow(ti, 2)
+                f,
+                d;      // f deriv
+
         unsigned int i;
         for (i = 0; i < size; ++i) {
+            t = xs[i];
+            d = f = 1;
+            while (std::abs(f/d) > _tolerance) {
+                ti = 1 - t;
+                t2 = t*t;
+                ti2 = ti*ti;
 
-            // find t for x
-            // this is the tricky part and i dont have a better solution
-            // than binary search right now (Newton-Raphson perhaps?)
-            x = std::min(1.f, std::max(0.f, xs[i]));
-            lo = 0.f; // initial upper bounds
-            up = 1.f; // initial lower bounds
-            t = (up + lo)/2; // initial t approx 50%
-            ax = _c0x+t*(_c1x+t*(_c2x+t*_c3x)); // x from approx t
+                //f = (std::pow(1-t, 3)*_sx) +
+                //    (3*std::pow(1-t, 2)*t*_ax) +
+                //    (3*(1-t)*std::pow(t, 2)*_bx) +
+                //    (std::pow(t, 3)*_ex) -
+                //    xs[i];
 
-            while (std::abs(x-ax) > _xTolerance) {
-                if(x > ax) lo = t; else up = t;
-                t = (up + lo)/2;
-                ax = _c0x+t*(_c1x+t*(_c2x+t*_c3x));
+                // same as above but no context switches
+                f = (ti2*ti*_sx) +
+                    (3*ti2*t*_ax) +
+                    (3*ti*t2*_bx) +
+                    (t2*t*_ex) -
+                    xs[i];
+
+                //d = -
+                //    (3*std::pow(1-t, 2)*_sx) +
+                //    (3*_ax*(1 - 4*t + 3*std::pow(t, 2))) +
+                //    (3*_bx*(2*t - 3*std::pow(t, 2))) +
+                //    (3*std::pow(t, 2)*_ex);
+
+                // same as above
+                d = -
+                    (3*ti2*_sx) +
+                    (3*_ax*(1 - 4*t + 3*t2)) +
+                    (3*_bx*(2*t - 3*t2)) +
+                    (3*t2*_ex);
+
+                t = (t - f/d);
             }
-
-            // find y for t
             ys[i] = _c0y+t*(_c1y+t*(_c2y+t*_c3y));
         }
     }

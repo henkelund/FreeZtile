@@ -113,24 +113,18 @@ namespace FreeZtile {
 
     private:
 
-        /**
-         *
-         * Should be called when s, e, a or b point is moved
-         */
-        void _reCalcCs();
-
         // X- & Y-components of start, end and control points.
         float _sx, _sy, _ex, _ey, _ax, _ay, _bx, _by;
 
         // constants for calculating curve.
         // should be recalculated when points change.
-        float _c0x, _c0y, _c1x, _c1y, _c2x, _c2y, _c3x, _c3y;
+        float _c0y, _c1y, _c2y, _c3y;
 
         /**
          *
          * @var float _xTolerance
          */
-        float _xTolerance;
+        float _tolerance;
 
     };
 
