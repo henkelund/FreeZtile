@@ -158,7 +158,7 @@ namespace FreeZtile {
                     (3*_bx*(2*t - 3*t2)) +
                     (3*t2*_ex);
 
-                t = (t - f/d);
+                t -= f/d;
             }
             outValues[i] = c0y+t*(c1y+t*(c2y+t*c3y));
         }

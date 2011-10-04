@@ -37,6 +37,12 @@ namespace FreeZtile {
     class Form
     {
     public:
+
+        static const int STATE_NONE                 = 0;
+        static const int STATE_APPLYING             = (1 << 0);
+        static const int STATE_CACHED               = (1 << 1);
+        static const int STATE_CACHE_INVALIDATED    = (1 << 2);
+
         Form();
 
         virtual ~Form();
@@ -45,6 +51,12 @@ namespace FreeZtile {
                 const FreeZtile::SampleInstant inInstants[],
                 FreeZtile::SampleValue outValues[],
                 unsigned int size);
+
+        /**
+         *
+         * @return int
+         */
+        int state();
 
     protected:
 
@@ -72,6 +84,24 @@ namespace FreeZtile {
         int _release();
 
     private:
+
+        /**
+         *
+         * @var int
+         */
+        int             _state;
+
+        /**
+         *
+         * @var SampleValue*
+         */
+        SampleValue     *_cache;
+
+        /**
+         *
+         * @var unsigned int
+         */
+        unsigned int    _cacheSize;
 
         /**
          * This mutex lock is acquired by _acquire() and released by _release().

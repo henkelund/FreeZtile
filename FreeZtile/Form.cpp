@@ -26,17 +26,25 @@
 * @link freeztile.org
 */
 
+#include <stdlib.h>
 #include "Form.h"
 
 namespace FreeZtile {
 
-    Form::Form()
+    Form::Form() :
+        _state(Form::STATE_NONE),
+        _cache(NULL),
+        _cacheSize(44100)
     {
         pthread_mutex_init(&_lock, NULL);
     }
 
     Form::~Form()
     {
+        if (_cache != NULL) {
+            free(_cache);
+            _cache = NULL;
+        }
         pthread_mutex_destroy(&_lock);
     }
 
@@ -46,8 +54,44 @@ namespace FreeZtile {
             unsigned int size)
     {
         _acquire();
-        _apply(inInstants, outValues, size);
+        _state |= STATE_APPLYING;
+
+        if ((~_state & STATE_CACHED) || (_state & STATE_CACHE_INVALIDATED)) {
+
+            // free old garbage
+            if (_cache != NULL) {
+                free(_cache);
+                _cache = NULL;
+            }
+
+            // allocate new space
+            unsigned int cacheByteSize = sizeof(SampleValue) * _cacheSize;
+            _cache = (SampleValue*) malloc(cacheByteSize);
+
+            // render form
+            SampleValue cacheInstants[_cacheSize];
+            for (unsigned int i = 0; i < _cacheSize; ++i) {
+                cacheInstants[i] = ((float)i)/_cacheSize;
+            }
+            _apply(cacheInstants, _cache, _cacheSize);
+
+            // update state
+            _state |= STATE_CACHED;
+            _state &= ~STATE_CACHE_INVALIDATED;
+        }
+
+        // fill output
+        for (unsigned int i = 0; i < size; ++i) {
+            outValues[i] = _cache[((int)(inInstants[i]*_cacheSize))%_cacheSize];
+        }
+
+        _state &= ~STATE_APPLYING;
         _release();
+    }
+
+    int Form::state()
+    {
+        return _state;
     }
 
     int Form::_acquire()
