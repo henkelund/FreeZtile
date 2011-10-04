@@ -83,6 +83,11 @@ namespace FreeZtile {
          */
         int _release();
 
+        /**
+         *
+         */
+        void _invalidateCache();
+
     private:
 
         /**
@@ -102,6 +107,12 @@ namespace FreeZtile {
          * @var unsigned int
          */
         unsigned int    _cacheSize;
+
+        /**
+         *
+         * @var unsigned int
+         */
+        unsigned int    _requestedCacheSize;
 
         /**
          * This mutex lock is acquired by _acquire() and released by _release().

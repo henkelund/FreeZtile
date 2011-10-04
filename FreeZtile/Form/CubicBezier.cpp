@@ -52,6 +52,7 @@ namespace FreeZtile {
     {
         _acquire();
         _sy = y;
+        _invalidateCache();
         _release();
     }
 
@@ -64,6 +65,7 @@ namespace FreeZtile {
     {
         _acquire();
         _ey = y;
+        _invalidateCache();
         _release();
     }
 
@@ -78,6 +80,7 @@ namespace FreeZtile {
         _ay = y;
         // assert between startX and bX
         _ax = std::min(_bx, std::max(_sx, x));
+        _invalidateCache();
         _release();
     }
 
@@ -92,6 +95,7 @@ namespace FreeZtile {
         _by = y;
         // assert between aX and endX
         _bx = std::min(_ex, std::max(_ax, x));
+        _invalidateCache();
         _release();
     }
 
@@ -104,6 +108,7 @@ namespace FreeZtile {
     {
         _acquire();
         _tolerance = std::min(0.5f, std::max(FLT_MIN*2, tolerance));
+        _invalidateCache();
         _release();
     }
 
