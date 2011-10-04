@@ -39,11 +39,22 @@ namespace FreeZtile {
     typedef float SampleValue;
 
     /**
-     * Used for sample position in a period.
+     * Used for sample instant in a period.
      * Will be expected to be a floating-point type
      * holding a value in the range: 0.f <= x < 1.f
      */
-    typedef float SamplePoint;
+    typedef float SampleInstant;
+
+    /**
+     * A simple 2D point structure
+     */
+    struct Point
+    {
+        Point(float x = 0.f, float y = 0.f) :
+            x(x), y(y)
+        {}
+        float x, y;
+    };
 
 }
 

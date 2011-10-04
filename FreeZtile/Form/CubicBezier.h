@@ -30,6 +30,7 @@
 #define FREEZTILE_CUBICBEZIER_H
 
 #include "FreeZtile/Form.h"
+#include "FreeZtile/Types.h"
 
 namespace FreeZtile {
 
@@ -38,16 +39,20 @@ namespace FreeZtile {
     public:
         CubicBezier();
 
+    protected:
+
         /**
          *
-         * @param FreeZtile::SamplePoint []xs
-         * @param FreeZtile::SampleValue []ys
+         * @param FreeZtile::SampleInstant[] inInstants
+         * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void xsToYs(
-                const FreeZtile::SamplePoint xs[],
-                FreeZtile::SampleValue ys[],
+        virtual void _apply(
+                const FreeZtile::SampleInstant inInstants[],
+                FreeZtile::SampleValue outValues[],
                 unsigned int size);
+
+    public:
 
         /**
          *
@@ -75,9 +80,9 @@ namespace FreeZtile {
 
         /**
          *
-         * @return FreeZtile::PointF
+         * @return FreeZtile::Point
          */
-        FreeZtile::PointF a();
+        FreeZtile::Point a();
 
         /**
          *
@@ -88,9 +93,9 @@ namespace FreeZtile {
 
         /**
          *
-         * @return FreeZtile::PointF
+         * @return FreeZtile::Point
          */
-        FreeZtile::PointF b();
+        FreeZtile::Point b();
 
         /**
          *
@@ -115,10 +120,6 @@ namespace FreeZtile {
 
         // X- & Y-components of start, end and control points.
         float _sx, _sy, _ex, _ey, _ax, _ay, _bx, _by;
-
-        // constants for calculating curve.
-        // should be recalculated when points change.
-        float _c0y, _c1y, _c2y, _c3y;
 
         /**
          *

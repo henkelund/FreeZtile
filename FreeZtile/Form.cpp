@@ -32,6 +32,31 @@ namespace FreeZtile {
 
     Form::Form()
     {
+        pthread_mutex_init(&_lock, NULL);
     }
 
+    Form::~Form()
+    {
+        pthread_mutex_destroy(&_lock);
+    }
+
+    void Form::apply(
+            const FreeZtile::SampleInstant inInstants[],
+            FreeZtile::SampleValue outValues[],
+            unsigned int size)
+    {
+        _acquire();
+        _apply(inInstants, outValues, size);
+        _release();
+    }
+
+    int Form::_acquire()
+    {
+        return pthread_mutex_lock(&_lock);
+    }
+
+    int Form::_release()
+    {
+        return pthread_mutex_unlock(&_lock);
+    }
 }

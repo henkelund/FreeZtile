@@ -29,34 +29,58 @@
 #ifndef FREEZTILE_FORM_H
 #define FREEZTILE_FORM_H
 
-#include "Types.h"
+#include <pthread.h>
+#include "FreeZtile/Types.h"
 
 namespace FreeZtile {
-
-    struct PointF
-    {
-        PointF(float x, float y) :
-            x(x), y(y)
-        {}
-        float x;
-        float y;
-    };
 
     class Form
     {
     public:
         Form();
 
+        virtual ~Form();
+
+        void apply(
+                const FreeZtile::SampleInstant inInstants[],
+                FreeZtile::SampleValue outValues[],
+                unsigned int size);
+
+    protected:
+
         /**
          *
-         * @param float[] xs
-         * @param float[] ys
+         * @param FreeZtile::SampleInstant[] inInstants
+         * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void xsToYs(
-                const FreeZtile::SamplePoint xs[],
-                FreeZtile::SampleValue ys[],
+        virtual void _apply(
+                const FreeZtile::SampleInstant inInstants[],
+                FreeZtile::SampleValue outValues[],
                 unsigned int size) = 0;
+
+        /**
+         *
+         * @return int
+         */
+        int _acquire();
+
+        /**
+         *
+         * @return int
+         */
+        int _release();
+
+    private:
+
+        /**
+         * This mutex lock is acquired by _acquire() and released by _release().
+         * It should be used to lock the form when changes are being made that
+         * affects it's shape.
+         *
+         * @var pthread_mutex_t
+         */
+        pthread_mutex_t _lock;
     };
 
 }

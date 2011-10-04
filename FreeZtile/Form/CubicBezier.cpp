@@ -39,8 +39,6 @@ namespace FreeZtile {
         _ex(1.f),   _ey(0.f),
         _ax(0.25f), _ay(0.f),
         _bx(0.75f), _by(0.f),
-        _c0y(0.f), _c1y(0.f),
-        _c2y(0.f), _c3y(0.f),
         _tolerance(1E-08)
     {
     }
@@ -52,7 +50,9 @@ namespace FreeZtile {
 
     void CubicBezier::setStartY(float y)
     {
+        _acquire();
         _sy = y;
+        _release();
     }
 
     float CubicBezier::endY()
@@ -62,31 +62,37 @@ namespace FreeZtile {
 
     void CubicBezier::setEndY(float y)
     {
+        _acquire();
         _ey = y;
+        _release();
     }
 
-    FreeZtile::PointF CubicBezier::a()
+    FreeZtile::Point CubicBezier::a()
     {
-        return FreeZtile::PointF(_ax, _ay);
+        return FreeZtile::Point(_ax, _ay);
     }
 
     void CubicBezier::setA(float x, float y)
     {
+        _acquire();
         _ay = y;
         // assert between startX and bX
         _ax = std::min(_bx, std::max(_sx, x));
+        _release();
     }
 
-    FreeZtile::PointF CubicBezier::b()
+    FreeZtile::Point CubicBezier::b()
     {
-        return FreeZtile::PointF(_bx, _by);
+        return FreeZtile::Point(_bx, _by);
     }
 
     void CubicBezier::setB(float x, float y)
     {
+        _acquire();
         _by = y;
-        // assert between startX and bX
+        // assert between aX and endX
         _bx = std::min(_ex, std::max(_ax, x));
+        _release();
     }
 
     float CubicBezier::tolerance()
@@ -96,29 +102,30 @@ namespace FreeZtile {
 
     void CubicBezier::setTolerance(float tolerance)
     {
+        _acquire();
         _tolerance = std::min(0.5f, std::max(FLT_MIN*2, tolerance));
+        _release();
     }
 
-    void CubicBezier::xsToYs(
-            const FreeZtile::SamplePoint xs[],
-            FreeZtile::SampleValue ys[],
+    void CubicBezier::_apply(
+            const FreeZtile::SampleInstant inInstants[],
+            FreeZtile::SampleValue outValues[],
             unsigned int size)
     {
-        _c0y = _sy;
-        _c1y = (3*_ay)-(3*_sy);
-        _c2y = (3*_sy)-(2*(3*_ay))+(3*_by);
-        _c3y = _ey-_sy+(3*_ay)-(3*_by);
-
         float   t,
                 t2,     // pow(t, 2)
                 ti,     // inverted t
                 ti2,    // pow(ti, 2)
                 f,
-                d;      // f deriv
+                d,      // f deriv
+                c0y = _sy,
+                c1y = (3*_ay)-(3*_sy),
+                c2y = (3*_sy)-(2*(3*_ay))+(3*_by),
+                c3y = _ey-_sy+(3*_ay)-(3*_by);
 
         unsigned int i;
         for (i = 0; i < size; ++i) {
-            t = xs[i];
+            t = inInstants[i]; // first approximation of t = x
             d = f = 1;
             while (std::abs(f/d) > _tolerance) {
                 ti = 1 - t;
@@ -129,14 +136,14 @@ namespace FreeZtile {
                 //    (3*std::pow(1-t, 2)*t*_ax) +
                 //    (3*(1-t)*std::pow(t, 2)*_bx) +
                 //    (std::pow(t, 3)*_ex) -
-                //    xs[i];
+                //    inPoints[i];
 
                 // same as above but no context switches
                 f = (ti2*ti*_sx) +
                     (3*ti2*t*_ax) +
                     (3*ti*t2*_bx) +
                     (t2*t*_ex) -
-                    xs[i];
+                    inInstants[i];
 
                 //d = -
                 //    (3*std::pow(1-t, 2)*_sx) +
@@ -153,7 +160,7 @@ namespace FreeZtile {
 
                 t = (t - f/d);
             }
-            ys[i] = _c0y+t*(_c1y+t*(_c2y+t*_c3y));
+            outValues[i] = c0y+t*(c1y+t*(c2y+t*c3y));
         }
     }
 
