@@ -27,6 +27,8 @@
 */
 
 #include "BezierList.h"
+#include <stdlib.h>
+#include <iostream>
 
 namespace FreeZtile {
 
@@ -75,7 +77,32 @@ namespace FreeZtile {
         FreeZtile::SampleValue outValues[],
         unsigned int size)
     {
-        //@todo implement
+        SampleInstant *instantsBuffer =
+                (SampleInstant*) malloc(sizeof(SampleInstant*)*size);
+
+        float progress = 0.f;
+        unsigned int i, curves = this->size(), firstInstant, lastInstant, shareInstants;
+        for (i = 0; i < curves; ++i) {
+
+            float share = _curveShares[i];
+            firstInstant = progress*size;
+            lastInstant = (i == curves - 1 ? size :
+                std::min((unsigned int) (firstInstant + share*size), size)) - 1;
+
+            for (shareInstants = 0;
+                 firstInstant + shareInstants <= lastInstant;
+                 ++shareInstants) {
+
+                // this isn't quite right since it normalizes based on the
+                // contents of inInstants which is quantified
+                instantsBuffer[shareInstants] =
+                        (inInstants[firstInstant + shareInstants] -
+                         inInstants[firstInstant])*(1.f/share);
+            }
+            at(i)->apply(instantsBuffer, outValues + firstInstant, shareInstants);
+            progress += share;
+        }
+
     }
 
 }
