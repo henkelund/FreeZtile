@@ -28,7 +28,6 @@
 
 #include "BezierList.h"
 #include <stdlib.h>
-#include <iostream>
 
 namespace FreeZtile {
 
@@ -103,6 +102,7 @@ namespace FreeZtile {
             progress += share;
         }
 
+        free(instantsBuffer);
     }
 
 }
