@@ -29,6 +29,9 @@
 #ifndef FREEZTILE_FORM_H
 #define FREEZTILE_FORM_H
 
+#define FZ_FORM_EDIT_START _acquire();
+#define FZ_FORM_EDIT_END _invalidateCache(); _release();
+
 #include <pthread.h>
 #include "FreeZtile/Types.h"
 
@@ -38,15 +41,29 @@ namespace FreeZtile {
     {
     public:
 
-        static const int STATE_NONE                 = 0;
-        static const int STATE_APPLYING             = (1 << 0);
-        static const int STATE_CACHED               = (1 << 1);
-        static const int STATE_CACHE_INVALIDATED    = (1 << 2);
+        static const unsigned int STATE_NONE                = 0;
+        static const unsigned int STATE_APPLYING            = (1 << 0);
+        static const unsigned int STATE_CACHED              = (1 << 1);
+        static const unsigned int STATE_CACHE_INVALIDATED   = (1 << 2);
 
+        /**
+         * Constructor
+         *
+         */
         Form();
 
+        /**
+         * Destructor
+         *
+         */
         virtual ~Form();
 
+        /**
+         *
+         * @param FreeZtile::SampleInstant[] inInstants
+         * @param FreeZtile::SampleValue[] outValues
+         * @param unsigned int size
+         */
         void apply(
                 const FreeZtile::SampleInstant inInstants[],
                 FreeZtile::SampleValue outValues[],
@@ -54,9 +71,9 @@ namespace FreeZtile {
 
         /**
          *
-         * @return int
+         * @return unsigned int int
          */
-        int state();
+        unsigned int state();
 
     protected:
 
@@ -94,7 +111,7 @@ namespace FreeZtile {
          *
          * @var int
          */
-        int             _state;
+        unsigned int    _state;
 
         /**
          *

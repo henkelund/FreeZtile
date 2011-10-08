@@ -37,6 +37,11 @@ namespace FreeZtile {
     class CubicBezier : public FreeZtile::Form
     {
     public:
+
+        /**
+         * Constructor
+         *
+         */
         CubicBezier();
 
     protected:

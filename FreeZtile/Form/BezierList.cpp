@@ -34,7 +34,9 @@ namespace FreeZtile {
     BezierList::BezierList() :
         Form(),
         std::vector<CubicBezier*>(),
-        _curveShares()
+        _curveShares(),
+        _instantsBuffer(NULL),
+        _instantsBufferSize(0)
     {
     }
 
@@ -43,10 +45,14 @@ namespace FreeZtile {
         while (size() > 0) {
             pop_back(); // <- calls objects destructor
         }
+        if (_instantsBuffer != NULL) {
+            free(_instantsBuffer);
+        }
     }
 
     FreeZtile::CubicBezier* BezierList::addCurve(int index)
     {
+        FZ_FORM_EDIT_START
         CubicBezier *curve = new CubicBezier();
         if (index < 0 || index > size()) {
             index = size();
@@ -54,8 +60,9 @@ namespace FreeZtile {
         insert(begin() + index, curve);
         curve->setStartY(index == 0 ? 0 : at(index - 1)->endY());
         curve->setEndY(index == (size() - 1) ? 0 : at(index + 1)->startY());
-        _curveShares.insert(_curveShares.begin() + index, 0.1f);
+        _curveShares.insert(_curveShares.begin() + index, 1.f);
         _normalizeCurveShares();
+        FZ_FORM_EDIT_END
         return curve;
     }
 
@@ -76,14 +83,19 @@ namespace FreeZtile {
         FreeZtile::SampleValue outValues[],
         unsigned int size)
     {
-        SampleInstant *instantsBuffer =
-                (SampleInstant*) malloc(sizeof(SampleInstant*)*size);
+        if (_instantsBuffer == NULL || _instantsBufferSize < size) {
+            if (_instantsBuffer != NULL) {
+                free(_instantsBuffer);
+            }
+            _instantsBuffer = (SampleInstant*) malloc(
+                        sizeof(SampleInstant*)*(_instantsBufferSize = size));
+        }
 
-        float progress = 0.f;
+        float progress = 0.f, share;
         unsigned int i, curves = this->size(), firstInstant, lastInstant, shareInstants;
         for (i = 0; i < curves; ++i) {
 
-            float share = _curveShares[i];
+            share = _curveShares[i];
             firstInstant = progress*size;
             lastInstant = (i == curves - 1 ? size :
                 std::min((unsigned int) (firstInstant + share*size), size)) - 1;
@@ -92,17 +104,15 @@ namespace FreeZtile {
                  firstInstant + shareInstants <= lastInstant;
                  ++shareInstants) {
 
-                // this isn't quite right since it normalizes based on the
-                // contents of inInstants which is quantified
-                instantsBuffer[shareInstants] =
-                        (inInstants[firstInstant + shareInstants] -
-                         inInstants[firstInstant])*(1.f/share);
+                _instantsBuffer[shareInstants] =
+                    // distance between current instant & first relative instant
+                    (inInstants[firstInstant + shareInstants] - inInstants[firstInstant])*
+                    // multiplied with inverted share for normalization
+                    (1.f/(inInstants[lastInstant] - inInstants[firstInstant]));
             }
-            at(i)->apply(instantsBuffer, outValues + firstInstant, shareInstants);
+            at(i)->apply(_instantsBuffer, outValues + firstInstant, shareInstants);
             progress += share;
         }
-
-        free(instantsBuffer);
     }
 
 }

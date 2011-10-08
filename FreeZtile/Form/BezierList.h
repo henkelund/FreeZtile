@@ -26,8 +26,8 @@
 * @link freeztile.org
 */
 
-#ifndef BEZIERLIST_H
-#define BEZIERLIST_H
+#ifndef FREEZTILE_BEZIERLIST_H
+#define FREEZTILE_BEZIERLIST_H
 
 #include <vector>
 #include "FreeZtile/Form/CubicBezier.h"
@@ -76,7 +76,19 @@ namespace FreeZtile {
          *
          * @var std::vector<float>
          */
-        std::vector<float> _curveShares;
+        std::vector<float>  _curveShares;
+
+        /**
+         *
+         * @var SampleInstant*
+         */
+        SampleInstant       *_instantsBuffer;
+
+        /**
+         *
+         * @var unsigned int
+         */
+        unsigned int        _instantsBufferSize;
 
         /**
          *
@@ -86,4 +98,4 @@ namespace FreeZtile {
 
 }
 
-#endif // BEZIERLIST_H
+#endif // FREEZTILE_BEZIERLIST_H

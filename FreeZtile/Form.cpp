@@ -97,7 +97,7 @@ namespace FreeZtile {
         _release();
     }
 
-    int Form::state()
+    unsigned int Form::state()
     {
         return _state;
     }

@@ -39,7 +39,7 @@ namespace FreeZtile {
         _ex(1.f),   _ey(0.f),
         _ax(0.25f), _ay(0.f),
         _bx(0.75f), _by(0.f),
-        _tolerance(1E-08)
+        _tolerance(1E-4)
     {
     }
 
@@ -50,10 +50,9 @@ namespace FreeZtile {
 
     void CubicBezier::setStartY(float y)
     {
-        _acquire();
+        FZ_FORM_EDIT_START
         _sy = y;
-        _invalidateCache();
-        _release();
+        FZ_FORM_EDIT_END
     }
 
     float CubicBezier::endY()
@@ -63,10 +62,9 @@ namespace FreeZtile {
 
     void CubicBezier::setEndY(float y)
     {
-        _acquire();
+        FZ_FORM_EDIT_START
         _ey = y;
-        _invalidateCache();
-        _release();
+        FZ_FORM_EDIT_END
     }
 
     FreeZtile::Point CubicBezier::a()
@@ -76,12 +74,11 @@ namespace FreeZtile {
 
     void CubicBezier::setA(float x, float y)
     {
-        _acquire();
+        FZ_FORM_EDIT_START
         _ay = y;
         // assert between startX and bX
         _ax = std::min(_bx, std::max(_sx, x));
-        _invalidateCache();
-        _release();
+        FZ_FORM_EDIT_END
     }
 
     FreeZtile::Point CubicBezier::b()
@@ -91,12 +88,11 @@ namespace FreeZtile {
 
     void CubicBezier::setB(float x, float y)
     {
-        _acquire();
+        FZ_FORM_EDIT_START
         _by = y;
         // assert between aX and endX
         _bx = std::min(_ex, std::max(_ax, x));
-        _invalidateCache();
-        _release();
+        FZ_FORM_EDIT_END
     }
 
     float CubicBezier::tolerance()
@@ -106,10 +102,9 @@ namespace FreeZtile {
 
     void CubicBezier::setTolerance(float tolerance)
     {
-        _acquire();
+        FZ_FORM_EDIT_START
         _tolerance = std::min(0.5f, std::max(FLT_MIN*2, tolerance));
-        _invalidateCache();
-        _release();
+        FZ_FORM_EDIT_END
     }
 
     void CubicBezier::_apply(
