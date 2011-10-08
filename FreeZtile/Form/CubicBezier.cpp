@@ -43,33 +43,33 @@ namespace FreeZtile {
     {
     }
 
-    float CubicBezier::startY()
+    float CubicBezier::startValue()
     {
         return _sy;
     }
 
-    void CubicBezier::setStartY(float y)
+    void CubicBezier::setStartValue(FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _sy = y;
+        _sy = value;
         FZ_FORM_EDIT_END
     }
 
-    float CubicBezier::endY()
+    float CubicBezier::endValue()
     {
         return _ey;
     }
 
-    void CubicBezier::setEndY(float y)
+    void CubicBezier::setEndValue(FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _ey = y;
+        _ey = value;
         FZ_FORM_EDIT_END
     }
 
-    FreeZtile::Point CubicBezier::a()
+    FreeZtile::FormPoint CubicBezier::a()
     {
-        return FreeZtile::Point(_ax, _ay);
+        return FreeZtile::FormPoint(_ax, _ay);
     }
 
     void CubicBezier::setA(float x, float y)
@@ -81,9 +81,9 @@ namespace FreeZtile {
         FZ_FORM_EDIT_END
     }
 
-    FreeZtile::Point CubicBezier::b()
+    FreeZtile::FormPoint CubicBezier::b()
     {
-        return FreeZtile::Point(_bx, _by);
+        return FreeZtile::FormPoint(_bx, _by);
     }
 
     void CubicBezier::setB(float x, float y)

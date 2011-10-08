@@ -46,14 +46,14 @@ namespace FreeZtile {
     typedef float SampleInstant;
 
     /**
-     * A simple 2D point structure
+     * An instant - value mapping structure
      */
-    struct Point
+    struct FormPoint
     {
-        Point(float x = 0.f, float y = 0.f) :
-            x(x), y(y)
+        FormPoint(SampleInstant instant = 0.f, SampleValue value = 0.f) :
+            instant(instant), value(value)
         {}
-        float x, y;
+        float instant, value;
     };
 
 }

@@ -58,8 +58,8 @@ namespace FreeZtile {
             index = size();
         }
         insert(begin() + index, curve);
-        curve->setStartY(index == 0 ? 0 : at(index - 1)->endY());
-        curve->setEndY(index == (size() - 1) ? 0 : at(index + 1)->startY());
+        curve->setStartValue(index == 0 ? 0 : at(index - 1)->endValue());
+        curve->setEndValue(index == (size() - 1) ? 0 : at(index + 1)->startValue());
         _curveShares.insert(_curveShares.begin() + index, 1.f);
         _normalizeCurveShares();
         FZ_FORM_EDIT_END

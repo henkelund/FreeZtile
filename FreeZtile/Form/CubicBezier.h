@@ -61,33 +61,33 @@ namespace FreeZtile {
 
         /**
          *
-         * @return float
+         * @return FreeZtile::SampleValue
          */
-        float startY();
+        float startValue();
 
         /**
          *
-         * @param float y
+         * @param FreeZtile::SampleValue value
          */
-        void setStartY(float y);
+        void setStartValue(FreeZtile::SampleValue value);
 
         /**
          *
-         * @return float
+         * @return FreeZtile::SampleValue
          */
-        float endY();
+        float endValue();
 
         /**
          *
-         * @param float y
+         * @param FreeZtile::SampleValue value
          */
-        void setEndY(float y);
+        void setEndValue(FreeZtile::SampleValue value);
 
         /**
          *
          * @return FreeZtile::Point
          */
-        FreeZtile::Point a();
+        FreeZtile::FormPoint a();
 
         /**
          *
@@ -100,7 +100,7 @@ namespace FreeZtile {
          *
          * @return FreeZtile::Point
          */
-        FreeZtile::Point b();
+        FreeZtile::FormPoint b();
 
         /**
          *
