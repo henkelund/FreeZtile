@@ -29,11 +29,18 @@
 #ifndef FREEZTILE_FORM_H
 #define FREEZTILE_FORM_H
 
-#define FZ_FORM_EDIT_START _acquire();
-#define FZ_FORM_EDIT_END _invalidateCache(); _release();
-
 #include <pthread.h>
 #include "FreeZtile/Types.h"
+#include "FreeZtile/Observer.h"
+
+#define FZ_FORM_EDIT_START \
+    Observer::fireEvent(EVENT_FORM_EDIT_START, this); \
+    _acquire();
+
+#define FZ_FORM_EDIT_END \
+    _invalidateCache(); \
+    _release(); \
+    Observer::fireEvent(EVENT_FORM_EDIT_END, this);
 
 namespace FreeZtile {
 
@@ -41,10 +48,14 @@ namespace FreeZtile {
     {
     public:
 
-        static const unsigned int STATE_NONE                = 0;
-        static const unsigned int STATE_APPLYING            = (1 << 0);
-        static const unsigned int STATE_CACHE_ACTIVATED     = (1 << 1);
-        static const unsigned int STATE_CACHE_INVALIDATED   = (1 << 2);
+        static const unsigned int   STATE_NONE              = 0;
+        static const unsigned int   STATE_APPLYING          = (1 << 0);
+        static const unsigned int   STATE_CACHE_ACTIVATED   = (1 << 1);
+        static const unsigned int   STATE_CACHE_INVALIDATED = (1 << 2);
+
+        static const char           *EVENT_FORM_EDIT_START;
+        static const char           *EVENT_FORM_EDIT_END;
+        static const char           *EVENT_FORM_CACHE_INVALIDATED;
 
         /**
          * Constructor

@@ -31,10 +31,11 @@
 
 #include <vector>
 #include "FreeZtile/Form/CubicBezier.h"
+#include "FreeZtile/Observer.h"
 
 namespace FreeZtile {
 
-    class BezierList : public FreeZtile::Form, private std::vector<CubicBezier*>
+    class BezierList : public FreeZtile::Form, private std::vector<CubicBezier*>, public FreeZtile::Listener
     {
     public:
 
@@ -56,6 +57,15 @@ namespace FreeZtile {
          * @return FreeZtile::CubicBezier* The new curve
          */
         FreeZtile::CubicBezier* addCurve(int index = -1);
+
+        /**
+         *
+         * @param bool
+         * @param bool
+         */
+        void                    useCache(bool useCache = true, bool syncChildren = false);
+
+        void                    recieve(const FreeZtile::Event *event);
 
     protected:
 

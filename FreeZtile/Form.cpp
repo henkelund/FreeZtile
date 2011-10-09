@@ -28,9 +28,12 @@
 
 #include <stdlib.h>
 #include "Form.h"
-#include <iostream>
 
 namespace FreeZtile {
+
+    const char *Form::EVENT_FORM_EDIT_START         = "FZ_FORM_EDIT_START";
+    const char *Form::EVENT_FORM_EDIT_END           = "FZ_FORM_EDIT_END";
+    const char *Form::EVENT_FORM_CACHE_INVALIDATED  = "FZ_FORM_CACHE_INVALIDATED";
 
     Form::Form() :
         _state(STATE_CACHE_ACTIVATED | STATE_CACHE_INVALIDATED),
@@ -131,5 +134,6 @@ namespace FreeZtile {
     void Form::_invalidateCache()
     {
         _state |= STATE_CACHE_INVALIDATED;
+        Observer::fireEvent(EVENT_FORM_CACHE_INVALIDATED, this);
     }
 }

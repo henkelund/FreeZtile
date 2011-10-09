@@ -34,10 +34,13 @@ namespace FreeZtile {
     BezierList::BezierList() :
         Form(),
         std::vector<CubicBezier*>(),
+        Listener(),
         _curveShares(),
         _instantsBuffer(NULL),
         _instantsBufferSize(0)
     {
+        Observer::addListsener(EVENT_FORM_EDIT_START, this);
+        Observer::addListsener(EVENT_FORM_EDIT_END, this);
     }
 
     BezierList::~BezierList()
@@ -64,6 +67,20 @@ namespace FreeZtile {
         _normalizeCurveShares();
         FZ_FORM_EDIT_END
         return curve;
+    }
+
+    void BezierList::useCache(bool useCache, bool syncChildren)
+    {
+        Form::useCache(useCache);
+        if (syncChildren) {
+            for (iterator it = begin(); it != end(); ++it) {
+                (*it)->useCache(useCache);
+            }
+        }
+    }
+
+    void BezierList::recieve(const FreeZtile::Event *event)
+    {
     }
 
     void BezierList::_normalizeCurveShares()
