@@ -34,14 +34,12 @@ namespace FreeZtile {
     BezierList::BezierList() :
         Form(),
         std::vector<CubicBezier*>(),
-        Listener(),
+        Subscriber(),
         _curveShares(),
         _instantsBuffer(NULL),
         _instantsBufferSize(0)
     {
-        Observer::addListsener(EVENT_FORM_EDIT_START, this);
-        Observer::addListsener(EVENT_FORM_EDIT_END, this);
-        Observer::addListsener(EVENT_FORM_CACHE_INVALIDATED, this);
+        Dispatcher::subscribe(EVENT_FORM_CACHE_INVALIDATED, this);
     }
 
     BezierList::~BezierList()

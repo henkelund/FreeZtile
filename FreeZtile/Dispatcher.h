@@ -26,8 +26,8 @@
 * @link freeztile.org
 */
 
-#ifndef FREEZTILE_OBSERVER_H
-#define FREEZTILE_OBSERVER_H
+#ifndef FREEZTILE_DISPATCHER_H
+#define FREEZTILE_DISPATCHER_H
 
 #include <map>
 #include <vector>
@@ -43,7 +43,7 @@ namespace FreeZtile {
         void *sender, *data;
     };
 
-    class Listener
+    class Subscriber
     {
     public:
         /**
@@ -53,16 +53,16 @@ namespace FreeZtile {
         virtual void recieve(const FreeZtile::Event *event) = 0;
     };
 
-    class Observer
+    class Dispatcher
     {
     public:
 
         /**
          *
          * @param const char*
-         * @param FreeZtile::Listener*
+         * @param FreeZtile::Subscriber*
          */
-        static void addListsener(const char *id, FreeZtile::Listener *listener);
+        static void subscribe(const char *id, FreeZtile::Subscriber *subscriber);
 
         /**
          *
@@ -70,17 +70,17 @@ namespace FreeZtile {
          * @param void*
          * @param void*
          */
-        static void fireEvent(const char *id, void *sender, void *data = NULL);
+        static void dispatch(const char *id, void *sender, void *data = NULL);
 
     private:
 
         /**
          *
-         * @var std::map<const char*, std::vector<Listener*> >
+         * @var std::map<const char*, std::vector<Subscriber*> >
          */
-        static std::map<const char*, std::vector<Listener*> > _listeners;
+        static std::map<const char*, std::vector<Subscriber*> > _subscribers;
     };
 
 }
 
-#endif // FREEZTILE_OBSERVER_H
+#endif // FREEZTILE_DISPATCHER_H

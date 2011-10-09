@@ -26,29 +26,29 @@
 * @link freeztile.org
 */
 
-#include "Observer.h"
+#include "Dispatcher.h"
 
 namespace FreeZtile {
 
-    std::map<const char*, std::vector<Listener*> > Observer::_listeners;
+    std::map<const char*, std::vector<Subscriber*> > Dispatcher::_subscribers;
 
-    void Observer::addListsener(const char *id, FreeZtile::Listener *listener)
+    void Dispatcher::subscribe(const char *id, FreeZtile::Subscriber *subscriber)
     {
-        std::vector<Listener*>::iterator it;
-        for (it = _listeners[id].begin(); it != _listeners[id].end(); ++it) {
-            if ((*it) == listener) {
+        std::vector<Subscriber*>::iterator it;
+        for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
+            if ((*it) == subscriber) {
                 // listener already added
                 return;
             }
         }
-        _listeners[id].push_back(listener);
+        _subscribers[id].push_back(subscriber);
     }
 
-    void Observer::fireEvent(const char *id, void *sender, void *data)
+    void Dispatcher::dispatch(const char *id, void *sender, void *data)
     {
         Event event(id, sender, data);
-        std::vector<Listener*>::iterator it;
-        for (it = _listeners[id].begin(); it != _listeners[id].end(); ++it) {
+        std::vector<Subscriber*>::iterator it;
+        for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
             (*it)->recieve(&event);
         }
     }

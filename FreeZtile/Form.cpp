@@ -134,6 +134,6 @@ namespace FreeZtile {
     void Form::_invalidateCache()
     {
         _state |= STATE_CACHE_INVALIDATED;
-        Observer::fireEvent(EVENT_FORM_CACHE_INVALIDATED, this);
+        Dispatcher::dispatch(EVENT_FORM_CACHE_INVALIDATED, this);
     }
 }

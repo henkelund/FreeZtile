@@ -31,11 +31,11 @@
 
 #include <vector>
 #include "FreeZtile/Form/CubicBezier.h"
-#include "FreeZtile/Observer.h"
+#include "FreeZtile/Dispatcher.h"
 
 namespace FreeZtile {
 
-    class BezierList : public FreeZtile::Form, private std::vector<CubicBezier*>, public FreeZtile::Listener
+    class BezierList : public FreeZtile::Form, private std::vector<CubicBezier*>, public FreeZtile::Subscriber
     {
     public:
 

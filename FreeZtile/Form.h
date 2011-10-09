@@ -31,16 +31,16 @@
 
 #include <pthread.h>
 #include "FreeZtile/Types.h"
-#include "FreeZtile/Observer.h"
+#include "FreeZtile/Dispatcher.h"
 
 #define FZ_FORM_EDIT_START \
-    Observer::fireEvent(EVENT_FORM_EDIT_START, this); \
+    Dispatcher::dispatch(EVENT_FORM_EDIT_START, this); \
     _acquire();
 
 #define FZ_FORM_EDIT_END \
     _invalidateCache(); \
     _release(); \
-    Observer::fireEvent(EVENT_FORM_EDIT_END, this);
+    Dispatcher::dispatch(EVENT_FORM_EDIT_END, this);
 
 namespace FreeZtile {
 
