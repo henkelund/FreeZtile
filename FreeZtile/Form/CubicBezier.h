@@ -38,6 +38,10 @@ namespace FreeZtile {
     {
     public:
 
+        static const char       *EVENT_CUBICBEZIER_POINT_CHANGED;
+        static const char       *EVENT_DATA_POINT_A;
+        static const char       *EVENT_DATA_POINT_B;
+
         /**
          * Constructor
          *

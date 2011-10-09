@@ -39,7 +39,7 @@ namespace FreeZtile {
         _instantsBuffer(NULL),
         _instantsBufferSize(0)
     {
-        Dispatcher::subscribe(EVENT_FORM_CACHE_INVALIDATED, this);
+        Dispatcher::subscribe(Form::EVENT_FORM_EDIT_END, this);
     }
 
     BezierList::~BezierList()
@@ -61,8 +61,13 @@ namespace FreeZtile {
             index = size();
         }
         insert(begin() + index, curve);
-        curve->setStartValue(index == 0 ? 0 : at(index - 1)->endValue());
-        curve->setEndValue(index == (size() - 1) ? 0 : at(index + 1)->startValue());
+        curve->setStartValue(
+            index == 0 ?
+            0 : at(index - 1)->endValue()
+        )->setEndValue(
+            index == (size() - 1) ?
+            0 : at(index + 1)->startValue()
+        );
         _curveShares.insert(_curveShares.begin() + index, 0.1f);
         _normalizeCurveShares();
         FZ_FORM_EDIT_END
@@ -82,15 +87,11 @@ namespace FreeZtile {
 
     void BezierList::recieve(const FreeZtile::Event *event)
     {
-        if (event->id == EVENT_FORM_CACHE_INVALIDATED) {
-            std::vector<CubicBezier*>::iterator it;
-            for (it = begin(); it != end(); ++it) {
-                // if child cache is invalidated ->
-                // update list cache aswell
-                if (event->sender == *it) {
-                    _invalidateCache();
-                    return;
-                }
+        int index;
+        if ((index = _childIndex(event->sender)) >= 0) {
+
+            if (event->id == Form::EVENT_FORM_EDIT_END) {
+                _invalidateCache();
             }
         }
     }
@@ -105,6 +106,16 @@ namespace FreeZtile {
         for (i = 0; i < size; ++i) {
             _curveShares[i] /= totalShare;
         }
+    }
+
+    int BezierList::_childIndex(const void *object)
+    {
+        for (unsigned int i = 0; i < size(); ++i) {
+            if (at(i) == object) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     void BezierList::_apply(

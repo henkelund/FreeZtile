@@ -62,7 +62,7 @@ namespace FreeZtile {
         }
     }
 
-    void Dispatcher::dispatch(const char *id, void *sender, void *data)
+    void Dispatcher::dispatch(const char *id, const void *sender, const void *data)
     {
         Event event(id, sender, data);
         std::vector<Subscriber*>::iterator it;

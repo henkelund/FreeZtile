@@ -103,7 +103,14 @@ namespace FreeZtile {
         /**
          *
          */
-        void _normalizeCurveShares();
+        void                _normalizeCurveShares();
+
+        /**
+         *
+         * @param void*
+         * @return int
+         */
+        int        _childIndex(const void *object);
     };
 
 }

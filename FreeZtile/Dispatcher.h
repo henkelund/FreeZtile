@@ -36,11 +36,11 @@ namespace FreeZtile {
 
     struct Event
     {
-        Event(const char* id, void *sender, void *data) :
+        Event(const char* id, const void *sender, const void *data) :
             id(id), sender(sender), data(data)
         {}
         const char *id;
-        void *sender, *data;
+        const void *sender, *data;
     };
 
     class Subscriber
@@ -77,7 +77,7 @@ namespace FreeZtile {
          * @param void*
          * @param void*
          */
-        static void dispatch(const char *id, void *sender, void *data = NULL);
+        static void dispatch(const char *id, const void *sender, const void *data = NULL);
 
     private:
 

@@ -33,6 +33,10 @@
 
 namespace FreeZtile {
 
+    const char *CubicBezier::EVENT_CUBICBEZIER_POINT_CHANGED    = "FZ_CUBICBEZIER_POINT_CHANGED";
+    const char *CubicBezier::EVENT_DATA_POINT_A                 = "A";
+    const char *CubicBezier::EVENT_DATA_POINT_B                 = "B";
+
     CubicBezier::CubicBezier() :
         Form(),
         _start(0.f, 0.f),
@@ -82,6 +86,7 @@ namespace FreeZtile {
         // assert between startX and bX
         _a.ins = std::min(_b.ins, std::max(_start.ins, instant));
         FZ_FORM_EDIT_END
+        Dispatcher::dispatch(EVENT_CUBICBEZIER_POINT_CHANGED, this, EVENT_DATA_POINT_A);
         return this;
     }
 
@@ -103,6 +108,7 @@ namespace FreeZtile {
         // assert between aX and endX
         _b.ins = std::min(_end.ins, std::max(_a.ins, instant));
         FZ_FORM_EDIT_END
+        Dispatcher::dispatch(EVENT_CUBICBEZIER_POINT_CHANGED, this, EVENT_DATA_POINT_B);
         return this;
     }
 
