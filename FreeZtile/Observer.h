@@ -36,13 +36,16 @@ namespace FreeZtile {
 
     struct Event
     {
+        Event(const char* id, void *sender, void *data) :
+            id(id), sender(sender), data(data)
+        {}
         const char *id;
         void *sender, *data;
     };
 
     class Listener
     {
-
+    public:
         /**
          *
          * @param FreeZtile::Event*
@@ -59,7 +62,7 @@ namespace FreeZtile {
          * @param const char*
          * @param FreeZtile::Listener*
          */
-        static void addListsener(const char *id, const FreeZtile::Listener *listener);
+        static void addListsener(const char *id, FreeZtile::Listener *listener);
 
         /**
          *

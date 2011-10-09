@@ -41,6 +41,7 @@ namespace FreeZtile {
     {
         Observer::addListsener(EVENT_FORM_EDIT_START, this);
         Observer::addListsener(EVENT_FORM_EDIT_END, this);
+        Observer::addListsener(EVENT_FORM_CACHE_INVALIDATED, this);
     }
 
     BezierList::~BezierList()
@@ -73,7 +74,8 @@ namespace FreeZtile {
     {
         Form::useCache(useCache);
         if (syncChildren) {
-            for (iterator it = begin(); it != end(); ++it) {
+            std::vector<CubicBezier*>::iterator it;
+            for (it = begin(); it != end(); ++it) {
                 (*it)->useCache(useCache);
             }
         }
@@ -81,6 +83,17 @@ namespace FreeZtile {
 
     void BezierList::recieve(const FreeZtile::Event *event)
     {
+        if (event->id == EVENT_FORM_CACHE_INVALIDATED) {
+            std::vector<CubicBezier*>::iterator it;
+            for (it = begin(); it != end(); ++it) {
+                // if child cache is invalidated ->
+                // update list cache aswell
+                if (event->sender == *it) {
+                    _invalidateCache();
+                    return;
+                }
+            }
+        }
     }
 
     void BezierList::_normalizeCurveShares()

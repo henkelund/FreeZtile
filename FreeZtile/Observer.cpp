@@ -27,20 +27,30 @@
 */
 
 #include "Observer.h"
-#include <iostream>
 
 namespace FreeZtile {
 
     std::map<const char*, std::vector<Listener*> > Observer::_listeners;
 
-    void Observer::addListsener(const char *id, const FreeZtile::Listener *listener)
+    void Observer::addListsener(const char *id, FreeZtile::Listener *listener)
     {
-        std::cout << id << " added" << std::endl;
+        std::vector<Listener*>::iterator it;
+        for (it = _listeners[id].begin(); it != _listeners[id].end(); ++it) {
+            if ((*it) == listener) {
+                // listener already added
+                return;
+            }
+        }
+        _listeners[id].push_back(listener);
     }
 
     void Observer::fireEvent(const char *id, void *sender, void *data)
     {
-        std::cout << id << " fired" << std::endl;
+        Event event(id, sender, data);
+        std::vector<Listener*>::iterator it;
+        for (it = _listeners[id].begin(); it != _listeners[id].end(); ++it) {
+            (*it)->recieve(&event);
+        }
     }
 
 }
