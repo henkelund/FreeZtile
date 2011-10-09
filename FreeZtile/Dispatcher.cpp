@@ -44,6 +44,24 @@ namespace FreeZtile {
         _subscribers[id].push_back(subscriber);
     }
 
+    void Dispatcher::unsubscribe(FreeZtile::Subscriber *subscriber, const char *id)
+    {
+        std::map<const char*, std::vector<Subscriber*> >::iterator it;
+        for (it = _subscribers.begin(); it != _subscribers.end(); ++it) {
+
+            if (id == NULL || id == it->first) {
+                std::vector<Subscriber*>::iterator subIt = it->second.begin();
+                while (subIt != it->second.end()) {
+                    if (*subIt == subscriber) {
+                        subIt = it->second.erase(subIt);
+                    } else {
+                        ++subIt;
+                    }
+                }
+            }
+        }
+    }
+
     void Dispatcher::dispatch(const char *id, void *sender, void *data)
     {
         Event event(id, sender, data);

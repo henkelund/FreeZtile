@@ -66,6 +66,13 @@ namespace FreeZtile {
 
         /**
          *
+         * @param FreeZtile::Subscriber*
+         * @param const char*
+         */
+        static void unsubscribe(FreeZtile::Subscriber *subscriber, const char *id = NULL);
+
+        /**
+         *
          * @param const char*
          * @param void*
          * @param void*

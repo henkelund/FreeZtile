@@ -44,6 +44,7 @@ namespace FreeZtile {
 
     BezierList::~BezierList()
     {
+        Dispatcher::unsubscribe(this);
         while (size() > 0) {
             pop_back(); // <- calls objects destructor
         }
