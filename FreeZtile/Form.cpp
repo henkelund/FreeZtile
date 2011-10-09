@@ -70,17 +70,17 @@ namespace FreeZtile {
                     _cache = NULL;
                 }
                 // allocate new space
-                _cacheSize = _requestedCacheSize;
-                _cache = (SampleValue*) malloc(sizeof(SampleValue)*_cacheSize);
+                _cache = (SampleValue*) malloc(
+                            sizeof(SampleValue)*(_cacheSize = _requestedCacheSize));
             }
 
-            SampleValue cacheInstants[_requestedCacheSize];
+            SampleValue cacheInstants[_cacheSize];
 
             // render form
-            for (unsigned int i = 0; i < _requestedCacheSize; ++i) {
-                cacheInstants[i] = ((float)i)/_requestedCacheSize;
+            for (unsigned int i = 0; i < _cacheSize; ++i) {
+                cacheInstants[i] = ((float)i)/_cacheSize;
             }
-            _apply(cacheInstants, _cache, _requestedCacheSize);
+            _apply(cacheInstants, _cache, _cacheSize);
 
             // update state
             _state |= STATE_CACHED;
@@ -90,7 +90,7 @@ namespace FreeZtile {
         // fill output
         for (unsigned int i = 0; i < size; ++i) {
             outValues[i] =
-                _cache[((int)(inInstants[i]*_requestedCacheSize))%_requestedCacheSize];
+                _cache[((int)(inInstants[i]*_cacheSize))%_cacheSize];
         }
 
         _state &= ~STATE_APPLYING;

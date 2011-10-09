@@ -91,10 +91,16 @@ namespace FreeZtile {
 
         /**
          *
-         * @param float x
-         * @param float y
+         * @param FreeZtile::SampleInstant instant
+         * @param FreeZtile::SampleValue value
          */
-        void setA(float x, float y);
+        void setA(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value);
+
+        /**
+         *
+         * @param FreeZtile::FormPoint a
+         */
+        void setA(FreeZtile::FormPoint a);
 
         /**
          *
@@ -104,10 +110,16 @@ namespace FreeZtile {
 
         /**
          *
-         * @param float x
-         * @param float y
+         * @param FreeZtile::SampleInstant instant
+         * @param FreeZtile::SampleValue value
          */
-        void setB(float x, float y);
+        void setB(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value);
+
+        /**
+         *
+         * @param FreeZtile::FormPoint b
+         */
+        void setB(FreeZtile::FormPoint b);
 
         /**
          *
@@ -123,8 +135,33 @@ namespace FreeZtile {
 
     private:
 
-        // X- & Y-components of start, end and control points.
-        float _sx, _sy, _ex, _ey, _ax, _ay, _bx, _by;
+        /**
+         * Start point
+         *
+         * @var FormPoint
+         */
+        FormPoint _start;
+
+        /**
+         * End point
+         *
+         * @var FormPoint
+         */
+        FormPoint _end;
+
+        /**
+         * First control point
+         *
+         * @var FormPoint
+         */
+        FormPoint _a;
+
+        /**
+         * Second control point
+         *
+         * @var FormPoint
+         */
+        FormPoint _b;
 
         /**
          *

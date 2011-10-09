@@ -88,7 +88,7 @@ namespace FreeZtile {
                 free(_instantsBuffer);
             }
             _instantsBuffer = (SampleInstant*) malloc(
-                        sizeof(SampleInstant*)*(_instantsBufferSize = size));
+                        sizeof(SampleInstant)*(_instantsBufferSize = size));
         }
 
         float progress = 0.f, share;

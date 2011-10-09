@@ -51,9 +51,9 @@ namespace FreeZtile {
     struct FormPoint
     {
         FormPoint(SampleInstant instant = 0.f, SampleValue value = 0.f) :
-            instant(instant), value(value)
+            ins(instant), val(value)
         {}
-        float instant, value;
+        float ins, val;
     };
 
 }

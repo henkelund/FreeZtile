@@ -35,64 +35,74 @@ namespace FreeZtile {
 
     CubicBezier::CubicBezier() :
         Form(),
-        _sx(0.f),   _sy(0.f),
-        _ex(1.f),   _ey(0.f),
-        _ax(0.25f), _ay(0.f),
-        _bx(0.75f), _by(0.f),
+        _start(0.f, 0.f),
+        _end(1.f, 0.f),
+        _a(0.25f, 0.f),
+        _b(0.75f, 0.f),
         _tolerance(1E-4)
     {
     }
 
     float CubicBezier::startValue()
     {
-        return _sy;
+        return _start.val;
     }
 
     void CubicBezier::setStartValue(FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _sy = value;
+        _start.val = value;
         FZ_FORM_EDIT_END
     }
 
     float CubicBezier::endValue()
     {
-        return _ey;
+        return _end.val;
     }
 
     void CubicBezier::setEndValue(FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _ey = value;
+        _end.val = value;
         FZ_FORM_EDIT_END
     }
 
     FreeZtile::FormPoint CubicBezier::a()
     {
-        return FreeZtile::FormPoint(_ax, _ay);
+        return _a;
     }
 
-    void CubicBezier::setA(float x, float y)
+    void CubicBezier::setA(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _ay = y;
+        _a.val = value;
         // assert between startX and bX
-        _ax = std::min(_bx, std::max(_sx, x));
+        _a.ins = std::min(_b.ins, std::max(_start.ins, instant));
         FZ_FORM_EDIT_END
+    }
+
+    void CubicBezier::setA(FreeZtile::FormPoint a)
+    {
+        setA(a.ins, a.val);
     }
 
     FreeZtile::FormPoint CubicBezier::b()
     {
-        return FreeZtile::FormPoint(_bx, _by);
+        return _b;
     }
 
-    void CubicBezier::setB(float x, float y)
+    void CubicBezier::setB(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value)
     {
         FZ_FORM_EDIT_START
-        _by = y;
+        _b.val = value;
         // assert between aX and endX
-        _bx = std::min(_ex, std::max(_ax, x));
+        _b.ins = std::min(_end.ins, std::max(_a.ins, instant));
         FZ_FORM_EDIT_END
+    }
+
+    void CubicBezier::setB(FreeZtile::FormPoint b)
+    {
+        setB(b.ins, b.val);
     }
 
     float CubicBezier::tolerance()
@@ -118,10 +128,10 @@ namespace FreeZtile {
                 ti2,    // pow(ti, 2)
                 f,
                 d,      // f deriv
-                c0y = _sy,
-                c1y = (3*_ay)-(3*_sy),
-                c2y = (3*_sy)-(2*(3*_ay))+(3*_by),
-                c3y = _ey-_sy+(3*_ay)-(3*_by);
+                c0y = _start.val,
+                c1y = (3*_a.val)-(3*_start.val),
+                c2y = (3*_start.val)-(2*(3*_a.val))+(3*_b.val),
+                c3y = _end.val-_start.val+(3*_a.val)-(3*_b.val);
 
         unsigned int i;
         for (i = 0; i < size; ++i) {
@@ -132,31 +142,31 @@ namespace FreeZtile {
                 t2 = t*t;
                 ti2 = ti*ti;
 
-                //f = (std::pow(1-t, 3)*_sx) +
-                //    (3*std::pow(1-t, 2)*t*_ax) +
-                //    (3*(1-t)*std::pow(t, 2)*_bx) +
-                //    (std::pow(t, 3)*_ex) -
+                //f = (std::pow(1-t, 3)*_start.ins) +
+                //    (3*std::pow(1-t, 2)*t*_a.ins) +
+                //    (3*(1-t)*std::pow(t, 2)*_b.ins) +
+                //    (std::pow(t, 3)*_end.ins) -
                 //    inPoints[i];
 
                 // same as above but no context switches
-                f = (ti2*ti*_sx) +
-                    (3*ti2*t*_ax) +
-                    (3*ti*t2*_bx) +
-                    (t2*t*_ex) -
+                f = (ti2*ti*_start.ins) +
+                    (3*ti2*t*_a.ins) +
+                    (3*ti*t2*_b.ins) +
+                    (t2*t*_end.ins) -
                     inInstants[i];
 
                 //d = -
-                //    (3*std::pow(1-t, 2)*_sx) +
-                //    (3*_ax*(1 - 4*t + 3*std::pow(t, 2))) +
-                //    (3*_bx*(2*t - 3*std::pow(t, 2))) +
-                //    (3*std::pow(t, 2)*_ex);
+                //    (3*std::pow(1-t, 2)*_start.ins) +
+                //    (3*_a.ins*(1 - 4*t + 3*std::pow(t, 2))) +
+                //    (3*_b.ins*(2*t - 3*std::pow(t, 2))) +
+                //    (3*std::pow(t, 2)*_end.ins);
 
                 // same as above
                 d = -
-                    (3*ti2*_sx) +
-                    (3*_ax*(1 - 4*t + 3*t2)) +
-                    (3*_bx*(2*t - 3*t2)) +
-                    (3*t2*_ex);
+                    (3*ti2*_start.ins) +
+                    (3*_a.ins*(1 - 4*t + 3*t2)) +
+                    (3*_b.ins*(2*t - 3*t2)) +
+                    (3*t2*_end.ins);
 
                 t -= f/d;
             }
