@@ -63,7 +63,7 @@ namespace FreeZtile {
         insert(begin() + index, curve);
         curve->setStartValue(index == 0 ? 0 : at(index - 1)->endValue());
         curve->setEndValue(index == (size() - 1) ? 0 : at(index + 1)->startValue());
-        _curveShares.insert(_curveShares.begin() + index, 1.f);
+        _curveShares.insert(_curveShares.begin() + index, 0.1f);
         _normalizeCurveShares();
         FZ_FORM_EDIT_END
         return curve;

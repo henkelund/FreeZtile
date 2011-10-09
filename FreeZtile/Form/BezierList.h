@@ -75,10 +75,10 @@ namespace FreeZtile {
          * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void _apply(
-                const FreeZtile::SampleInstant inInstants[],
-                FreeZtile::SampleValue outValues[],
-                unsigned int size);
+        virtual void            _apply(
+                                    const FreeZtile::SampleInstant  inInstants[],
+                                    FreeZtile::SampleValue          outValues[],
+                                    unsigned int                    size);
 
     private:
 

@@ -44,6 +44,84 @@ namespace FreeZtile {
          */
         CubicBezier();
 
+        /**
+         *
+         * @return FreeZtile::SampleValue
+         */
+        float                   startValue();
+
+        /**
+         *
+         * @param FreeZtile::SampleValue value
+         */
+        FreeZtile::CubicBezier* setStartValue(FreeZtile::SampleValue value);
+
+        /**
+         *
+         * @return FreeZtile::SampleValue
+         */
+        float                   endValue();
+
+        /**
+         *
+         * @param FreeZtile::SampleValue value
+         */
+        FreeZtile::CubicBezier* setEndValue(FreeZtile::SampleValue value);
+
+        /**
+         *
+         * @return FreeZtile::Point
+         */
+        FreeZtile::FormPoint    a();
+
+        /**
+         *
+         * @param FreeZtile::SampleInstant instant
+         * @param FreeZtile::SampleValue value
+         */
+        FreeZtile::CubicBezier* setA(
+                                    FreeZtile::SampleInstant    instant,
+                                    FreeZtile::SampleValue      value);
+
+        /**
+         *
+         * @param FreeZtile::FormPoint a
+         */
+        FreeZtile::CubicBezier* setA(FreeZtile::FormPoint a);
+
+        /**
+         *
+         * @return FreeZtile::Point
+         */
+        FreeZtile::FormPoint    b();
+
+        /**
+         *
+         * @param FreeZtile::SampleInstant instant
+         * @param FreeZtile::SampleValue value
+         */
+        FreeZtile::CubicBezier* setB(
+                                    FreeZtile::SampleInstant    instant,
+                                    FreeZtile::SampleValue      value);
+
+        /**
+         *
+         * @param FreeZtile::FormPoint b
+         */
+        FreeZtile::CubicBezier* setB(FreeZtile::FormPoint b);
+
+        /**
+         *
+         * @reurn float
+         */
+        float                   tolerance();
+
+        /**
+         *
+         * @param float tolerance
+         */
+        FreeZtile::CubicBezier* setTolerance(float tolerance);
+
     protected:
 
         /**
@@ -52,86 +130,10 @@ namespace FreeZtile {
          * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void _apply(
-                const FreeZtile::SampleInstant inInstants[],
-                FreeZtile::SampleValue outValues[],
-                unsigned int size);
-
-    public:
-
-        /**
-         *
-         * @return FreeZtile::SampleValue
-         */
-        float startValue();
-
-        /**
-         *
-         * @param FreeZtile::SampleValue value
-         */
-        void setStartValue(FreeZtile::SampleValue value);
-
-        /**
-         *
-         * @return FreeZtile::SampleValue
-         */
-        float endValue();
-
-        /**
-         *
-         * @param FreeZtile::SampleValue value
-         */
-        void setEndValue(FreeZtile::SampleValue value);
-
-        /**
-         *
-         * @return FreeZtile::Point
-         */
-        FreeZtile::FormPoint a();
-
-        /**
-         *
-         * @param FreeZtile::SampleInstant instant
-         * @param FreeZtile::SampleValue value
-         */
-        void setA(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value);
-
-        /**
-         *
-         * @param FreeZtile::FormPoint a
-         */
-        void setA(FreeZtile::FormPoint a);
-
-        /**
-         *
-         * @return FreeZtile::Point
-         */
-        FreeZtile::FormPoint b();
-
-        /**
-         *
-         * @param FreeZtile::SampleInstant instant
-         * @param FreeZtile::SampleValue value
-         */
-        void setB(FreeZtile::SampleInstant instant, FreeZtile::SampleValue value);
-
-        /**
-         *
-         * @param FreeZtile::FormPoint b
-         */
-        void setB(FreeZtile::FormPoint b);
-
-        /**
-         *
-         * @reurn float
-         */
-        float tolerance();
-
-        /**
-         *
-         * @param float tolerance
-         */
-        void setTolerance(float tolerance);
+        virtual void            _apply(
+                                    const FreeZtile::SampleInstant  inInstants[],
+                                    FreeZtile::SampleValue          outValues[],
+                                    unsigned int                    size);
 
     private:
 
@@ -140,34 +142,34 @@ namespace FreeZtile {
          *
          * @var FormPoint
          */
-        FormPoint _start;
+        FormPoint   _start;
 
         /**
          * End point
          *
          * @var FormPoint
          */
-        FormPoint _end;
+        FormPoint   _end;
 
         /**
          * First control point
          *
          * @var FormPoint
          */
-        FormPoint _a;
+        FormPoint   _a;
 
         /**
          * Second control point
          *
          * @var FormPoint
          */
-        FormPoint _b;
+        FormPoint   _b;
 
         /**
          *
          * @var float _xTolerance
          */
-        float _tolerance;
+        float       _tolerance;
 
     };
 
