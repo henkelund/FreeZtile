@@ -28,11 +28,12 @@
 
 #include <stdlib.h>
 #include "Form.h"
+#include <iostream>
 
 namespace FreeZtile {
 
     Form::Form() :
-        _state(Form::STATE_NONE),
+        _state(STATE_CACHE_ACTIVATED | STATE_CACHE_INVALIDATED),
         _cache(NULL),
         _cacheSize(0),
         _requestedCacheSize(44100)
@@ -57,12 +58,14 @@ namespace FreeZtile {
         _acquire();
         _state |= STATE_APPLYING;
 
-        if (_requestedCacheSize > _cacheSize) {
+        bool useCache = _state & STATE_CACHE_ACTIVATED;
+        bool buildCache = useCache && (_state & STATE_CACHE_INVALIDATED);
+
+        if (useCache && _requestedCacheSize > _cacheSize) {
             _invalidateCache();
         }
 
-        if ((~_state & STATE_CACHED) || (_state & STATE_CACHE_INVALIDATED)) {
-
+        if (buildCache) {
             if (_cache == NULL || _requestedCacheSize > _cacheSize) {
                 // free old garbage
                 if (_cache != NULL) {
@@ -83,14 +86,18 @@ namespace FreeZtile {
             _apply(cacheInstants, _cache, _cacheSize);
 
             // update state
-            _state |= STATE_CACHED;
             _state &= ~STATE_CACHE_INVALIDATED;
         }
 
         // fill output
-        for (unsigned int i = 0; i < size; ++i) {
-            outValues[i] =
-                _cache[((int)(inInstants[i]*_cacheSize))%_cacheSize];
+        if (useCache) {
+
+            for (unsigned int i = 0; i < size; ++i) {
+                outValues[i] =
+                    _cache[((int)(inInstants[i]*_cacheSize))%_cacheSize];
+            }
+        } else {
+            _apply(inInstants, outValues, size);
         }
 
         _state &= ~STATE_APPLYING;
@@ -100,6 +107,15 @@ namespace FreeZtile {
     unsigned int Form::state()
     {
         return _state;
+    }
+
+    void Form::useCache(bool useCache)
+    {
+        if (useCache) {
+            _state |= STATE_CACHE_ACTIVATED;
+        } else {
+            _state &= ~STATE_CACHE_ACTIVATED;
+        }
     }
 
     int Form::_acquire()

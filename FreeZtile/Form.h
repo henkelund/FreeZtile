@@ -43,7 +43,7 @@ namespace FreeZtile {
 
         static const unsigned int STATE_NONE                = 0;
         static const unsigned int STATE_APPLYING            = (1 << 0);
-        static const unsigned int STATE_CACHED              = (1 << 1);
+        static const unsigned int STATE_CACHE_ACTIVATED     = (1 << 1);
         static const unsigned int STATE_CACHE_INVALIDATED   = (1 << 2);
 
         /**
@@ -64,16 +64,22 @@ namespace FreeZtile {
          * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        void apply(
-                const FreeZtile::SampleInstant inInstants[],
-                FreeZtile::SampleValue outValues[],
-                unsigned int size);
+        void            apply(
+                            const FreeZtile::SampleInstant  inInstants[],
+                            FreeZtile::SampleValue          outValues[],
+                            unsigned int                    size);
 
         /**
          *
-         * @return unsigned int int
+         * @return unsigned int
          */
-        unsigned int state();
+        unsigned int    state();
+
+        /**
+         *
+         * @param bool
+         */
+        void            useCache(bool useCache = true);
 
     protected:
 
@@ -83,27 +89,27 @@ namespace FreeZtile {
          * @param FreeZtile::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void _apply(
-                const FreeZtile::SampleInstant inInstants[],
-                FreeZtile::SampleValue outValues[],
-                unsigned int size) = 0;
+        virtual void    _apply(
+                            const FreeZtile::SampleInstant  inInstants[],
+                            FreeZtile::SampleValue          outValues[],
+                            unsigned int                    size) = 0;
 
         /**
          *
          * @return int
          */
-        int _acquire();
+        int             _acquire();
 
         /**
          *
          * @return int
          */
-        int _release();
+        int             _release();
 
         /**
          *
          */
-        void _invalidateCache();
+        void            _invalidateCache();
 
     private:
 
