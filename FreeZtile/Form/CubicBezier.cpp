@@ -149,7 +149,8 @@ namespace FreeZtile {
         unsigned int i;
         for (i = 0; i < size; ++i) {
             t = inInstants[i]; // first approximation of t = x
-            d = f = 1;
+            d = 1;
+            f = (t > 0.f ? 1 : 0);
             while (std::abs(f/d) > _tolerance) {
                 ti = 1 - t;
                 t2 = t*t;
