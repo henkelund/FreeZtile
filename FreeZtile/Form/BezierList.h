@@ -107,6 +107,15 @@ namespace FreeZtile {
 
         /**
          *
+         * @param unsigned int
+         * @param bool master/slave
+         */
+        void                _syncHandles(
+                                unsigned int    index,
+                                bool            master = true);
+
+        /**
+         *
          * @param void*
          * @return int
          */

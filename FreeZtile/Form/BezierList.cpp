@@ -68,8 +68,8 @@ namespace FreeZtile {
             index == (size() - 1) ?
             0 : at(index + 1)->startValue()
         );
-        _curveShares.insert(_curveShares.begin() + index, 0.1f);
-        _normalizeCurveShares();
+        _curveShares.insert(_curveShares.begin() + index, 1.f/size());
+        _syncHandles(index, false);
         FZ_FORM_EDIT_END
         return curve;
     }
@@ -105,6 +105,37 @@ namespace FreeZtile {
         }
         for (i = 0; i < size; ++i) {
             _curveShares[i] /= totalShare;
+        }
+    }
+
+    void BezierList::_syncHandles(unsigned int index, bool master)
+    {
+        _normalizeCurveShares();
+
+        unsigned int    prevI = (index - 1)%size(),
+                        nextI = (index + 1)%size();
+        float aIns, bIns;
+
+        if (!master) {
+            index = (index + 1)%size();
+            prevI = (prevI + 1)%size();
+            nextI = (nextI + 1)%size();
+        }
+
+        aIns = at(index)->a().ins*_curveShares[index];
+        bIns = 1.f - aIns/_curveShares[prevI];
+        at(prevI)->setB(bIns, -at(index)->a().val);
+
+        if (!master) {
+            index = (index - 2)%size();
+            prevI = (prevI - 2)%size();
+            nextI = (nextI - 2)%size();
+        }
+
+        if (index != nextI) {
+            bIns = (1.f - at(index)->b().ins)*_curveShares[index];
+            aIns = bIns/_curveShares[nextI];
+            at(nextI)->setA(aIns, -at(index)->b().val);
         }
     }
 
