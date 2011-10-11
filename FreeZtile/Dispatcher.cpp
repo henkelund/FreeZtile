@@ -28,11 +28,12 @@
 
 #include "Dispatcher.h"
 
-namespace FreeZtile {
+namespace FZ {
 
     std::map<const char*, std::vector<Subscriber*> > Dispatcher::_subscribers;
 
-    void Dispatcher::subscribe(const char *id, FreeZtile::Subscriber *subscriber)
+    void Dispatcher::subscribe(
+            const char *id, FZ::Subscriber *subscriber, const void *publisher)
     {
         std::vector<Subscriber*>::iterator it;
         for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
@@ -44,7 +45,8 @@ namespace FreeZtile {
         _subscribers[id].push_back(subscriber);
     }
 
-    void Dispatcher::unsubscribe(FreeZtile::Subscriber *subscriber, const char *id)
+    void Dispatcher::unsubscribe(
+            FZ::Subscriber *subscriber, const char *id, const void *publisher)
     {
         std::map<const char*, std::vector<Subscriber*> >::iterator it;
         for (it = _subscribers.begin(); it != _subscribers.end(); ++it) {
@@ -62,9 +64,9 @@ namespace FreeZtile {
         }
     }
 
-    void Dispatcher::dispatch(const char *id, const void *sender, const void *data)
+    void Dispatcher::dispatch(const char *id, const void *publisher, const void *data)
     {
-        Event event(id, sender, data);
+        Event event(id, publisher, data, NULL);
         std::vector<Subscriber*>::iterator it;
         for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
             (*it)->recieve(&event);

@@ -42,7 +42,7 @@
     _release(); \
     Dispatcher::dispatch(EVENT_FORM_EDIT_END, this);
 
-namespace FreeZtile {
+namespace FZ {
 
     class Form
     {
@@ -71,14 +71,14 @@ namespace FreeZtile {
 
         /**
          *
-         * @param FreeZtile::SampleInstant[] inInstants
-         * @param FreeZtile::SampleValue[] outValues
+         * @param FZ::SampleInstant[] inInstants
+         * @param FZ::SampleValue[] outValues
          * @param unsigned int size
          */
         void            apply(
-                            const FreeZtile::SampleInstant  inInstants[],
-                            FreeZtile::SampleValue          outValues[],
-                            unsigned int                    size);
+                            const FZ::SampleInstant inInstants[],
+                            FZ::SampleValue         outValues[],
+                            unsigned int            size);
 
         /**
          *
@@ -96,14 +96,14 @@ namespace FreeZtile {
 
         /**
          *
-         * @param FreeZtile::SampleInstant[] inInstants
-         * @param FreeZtile::SampleValue[] outValues
+         * @param FZ::SampleInstant[] inInstants
+         * @param FZ::SampleValue[] outValues
          * @param unsigned int size
          */
         virtual void    _apply(
-                            const FreeZtile::SampleInstant  inInstants[],
-                            FreeZtile::SampleValue          outValues[],
-                            unsigned int                    size) = 0;
+                            const FZ::SampleInstant inInstants[],
+                            FZ::SampleValue         outValues[],
+                            unsigned int            size) = 0;
 
         /**
          *

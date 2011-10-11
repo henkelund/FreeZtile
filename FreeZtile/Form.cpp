@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include "Form.h"
 
-namespace FreeZtile {
+namespace FZ {
 
     const char *Form::EVENT_FORM_EDIT_START         = "FZ_FORM_EDIT_START";
     const char *Form::EVENT_FORM_EDIT_END           = "FZ_FORM_EDIT_END";
@@ -54,9 +54,9 @@ namespace FreeZtile {
     }
 
     void Form::apply(
-            const FreeZtile::SampleInstant inInstants[],
-            FreeZtile::SampleValue outValues[],
-            unsigned int size)
+            const FZ::SampleInstant inInstants[],
+            FZ::SampleValue         outValues[],
+            unsigned int            size)
     {
         _acquire();
         _state |= STATE_APPLYING;

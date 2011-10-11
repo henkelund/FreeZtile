@@ -32,9 +32,9 @@
 #include "FreeZtile/Form.h"
 #include "FreeZtile/Types.h"
 
-namespace FreeZtile {
+namespace FZ {
 
-    class CubicBezier : public FreeZtile::Form
+    class CubicBezier : public FZ::Form
     {
     public:
 
@@ -50,94 +50,94 @@ namespace FreeZtile {
 
         /**
          *
-         * @return FreeZtile::SampleValue
+         * @return FZ::SampleValue
          */
-        float                   startValue();
+        float               startValue();
 
         /**
          *
-         * @param FreeZtile::SampleValue value
+         * @param FZ::SampleValue value
          */
-        FreeZtile::CubicBezier* setStartValue(FreeZtile::SampleValue value);
+        FZ::CubicBezier*    setStartValue(FZ::SampleValue value);
 
         /**
          *
-         * @return FreeZtile::SampleValue
+         * @return FZ::SampleValue
          */
-        float                   endValue();
+        float               endValue();
 
         /**
          *
-         * @param FreeZtile::SampleValue value
+         * @param FZ::SampleValue value
          */
-        FreeZtile::CubicBezier* setEndValue(FreeZtile::SampleValue value);
+        FZ::CubicBezier*    setEndValue(FZ::SampleValue value);
 
         /**
          *
-         * @return FreeZtile::Point
+         * @return FZ::Point
          */
-        FreeZtile::FormPoint    a();
+        FZ::FormPoint       a();
 
         /**
          *
-         * @param FreeZtile::SampleInstant instant
-         * @param FreeZtile::SampleValue value
+         * @param FZ::SampleInstant instant
+         * @param FZ::SampleValue value
          */
-        FreeZtile::CubicBezier* setA(
-                                    FreeZtile::SampleInstant    instant,
-                                    FreeZtile::SampleValue      value);
+        FZ::CubicBezier*    setA(
+                                FZ::SampleInstant   instant,
+                                FZ::SampleValue     value);
 
         /**
          *
-         * @param FreeZtile::FormPoint a
+         * @param FZ::FormPoint a
          */
-        FreeZtile::CubicBezier* setA(FreeZtile::FormPoint a);
+        FZ::CubicBezier*    setA(FZ::FormPoint a);
 
         /**
          *
-         * @return FreeZtile::Point
+         * @return FZ::Point
          */
-        FreeZtile::FormPoint    b();
+        FZ::FormPoint       b();
 
         /**
          *
-         * @param FreeZtile::SampleInstant instant
-         * @param FreeZtile::SampleValue value
+         * @param FZ::SampleInstant instant
+         * @param FZ::SampleValue value
          */
-        FreeZtile::CubicBezier* setB(
-                                    FreeZtile::SampleInstant    instant,
-                                    FreeZtile::SampleValue      value);
+        FZ::CubicBezier*    setB(
+                                FZ::SampleInstant   instant,
+                                FZ::SampleValue     value);
 
         /**
          *
-         * @param FreeZtile::FormPoint b
+         * @param FZ::FormPoint b
          */
-        FreeZtile::CubicBezier* setB(FreeZtile::FormPoint b);
+        FZ::CubicBezier*    setB(FZ::FormPoint b);
 
         /**
          *
          * @reurn float
          */
-        float                   tolerance();
+        float               tolerance();
 
         /**
          *
          * @param float tolerance
          */
-        FreeZtile::CubicBezier* setTolerance(float tolerance);
+        FZ::CubicBezier*    setTolerance(float tolerance);
 
     protected:
 
         /**
          *
-         * @param FreeZtile::SampleInstant[] inInstants
-         * @param FreeZtile::SampleValue[] outValues
+         * @param FZ::SampleInstant[] inInstants
+         * @param FZ::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void            _apply(
-                                    const FreeZtile::SampleInstant  inInstants[],
-                                    FreeZtile::SampleValue          outValues[],
-                                    unsigned int                    size);
+        virtual void        _apply(
+                                const FZ::SampleInstant inInstants[],
+                                FZ::SampleValue         outValues[],
+                                unsigned int            size);
 
     private:
 

@@ -29,7 +29,7 @@
 #ifndef FREEZTILE_TYPES_H
 #define FREEZTILE_TYPES_H
 
-namespace FreeZtile {
+namespace FZ {
 
     /**
      * Used for sample values.

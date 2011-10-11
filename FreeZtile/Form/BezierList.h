@@ -33,9 +33,9 @@
 #include "FreeZtile/Form/CubicBezier.h"
 #include "FreeZtile/Dispatcher.h"
 
-namespace FreeZtile {
+namespace FZ {
 
-    class BezierList : public FreeZtile::Form, private std::vector<CubicBezier*>, public FreeZtile::Subscriber
+    class BezierList : public FZ::Form, private std::vector<CubicBezier*>, public FZ::Subscriber
     {
     public:
 
@@ -54,31 +54,35 @@ namespace FreeZtile {
         /**
          *
          * @param int Position
-         * @return FreeZtile::CubicBezier* The new curve
+         * @return FZ::CubicBezier* The new curve
          */
-        FreeZtile::CubicBezier* addCurve(int index = -1);
+        FZ::CubicBezier*    addCurve(int index = -1);
 
         /**
          *
          * @param bool
          * @param bool
          */
-        void                    useCache(bool useCache = true, bool syncChildren = false);
+        void                useCache(bool useCache = true, bool syncChildren = false);
 
-        void                    recieve(const FreeZtile::Event *event);
+        /**
+         *
+         * @param const FZ::Event*
+         */
+        void                recieve(const FZ::Event *event);
 
     protected:
 
         /**
          *
-         * @param FreeZtile::SampleInstant[] inInstants
-         * @param FreeZtile::SampleValue[] outValues
+         * @param FZ::SampleInstant[] inInstants
+         * @param FZ::SampleValue[] outValues
          * @param unsigned int size
          */
-        virtual void            _apply(
-                                    const FreeZtile::SampleInstant  inInstants[],
-                                    FreeZtile::SampleValue          outValues[],
-                                    unsigned int                    size);
+        virtual void        _apply(
+                                const FZ::SampleInstant inInstants[],
+                                FZ::SampleValue         outValues[],
+                                unsigned int            size);
 
     private:
 
@@ -119,7 +123,7 @@ namespace FreeZtile {
          * @param void*
          * @return int
          */
-        int        _childIndex(const void *object);
+        int                 _childIndex(const void *object);
     };
 
 }

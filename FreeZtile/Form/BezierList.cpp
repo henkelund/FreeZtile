@@ -29,7 +29,7 @@
 #include "BezierList.h"
 #include <stdlib.h>
 
-namespace FreeZtile {
+namespace FZ {
 
     BezierList::BezierList() :
         Form(),
@@ -53,7 +53,7 @@ namespace FreeZtile {
         }
     }
 
-    FreeZtile::CubicBezier* BezierList::addCurve(int index)
+    FZ::CubicBezier* BezierList::addCurve(int index)
     {
         FZ_FORM_EDIT_START
         CubicBezier *curve = new CubicBezier();
@@ -85,7 +85,7 @@ namespace FreeZtile {
         }
     }
 
-    void BezierList::recieve(const FreeZtile::Event *event)
+    void BezierList::recieve(const FZ::Event *event)
     {
         int index;
         if ((index = _childIndex(event->sender)) >= 0) {
@@ -150,9 +150,9 @@ namespace FreeZtile {
     }
 
     void BezierList::_apply(
-        const FreeZtile::SampleInstant inInstants[],
-        FreeZtile::SampleValue outValues[],
-        unsigned int size)
+        const FZ::SampleInstant inInstants[],
+        FZ::SampleValue         outValues[],
+        unsigned int            size)
     {
         if (_instantsBuffer == NULL || _instantsBufferSize < size) {
             if (_instantsBuffer != NULL) {

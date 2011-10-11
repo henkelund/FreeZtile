@@ -31,7 +31,7 @@
 #include <cmath>
 #include <float.h>
 
-namespace FreeZtile {
+namespace FZ {
 
     const char *CubicBezier::EVENT_CUBICBEZIER_POINT_CHANGED    = "FZ_CUBICBEZIER_POINT_CHANGED";
     const char *CubicBezier::EVENT_DATA_POINT_A                 = "A";
@@ -52,7 +52,7 @@ namespace FreeZtile {
         return _start.val;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setStartValue(FreeZtile::SampleValue value)
+    FZ::CubicBezier* CubicBezier::setStartValue(FZ::SampleValue value)
     {
         FZ_FORM_EDIT_START
         _start.val = value;
@@ -65,7 +65,7 @@ namespace FreeZtile {
         return _end.val;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setEndValue(FreeZtile::SampleValue value)
+    FZ::CubicBezier* CubicBezier::setEndValue(FZ::SampleValue value)
     {
         FZ_FORM_EDIT_START
         _end.val = value;
@@ -73,13 +73,13 @@ namespace FreeZtile {
         return this;
     }
 
-    FreeZtile::FormPoint CubicBezier::a()
+    FZ::FormPoint CubicBezier::a()
     {
         return _a;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setA(
-            FreeZtile::SampleInstant instant, FreeZtile::SampleValue value)
+    FZ::CubicBezier* CubicBezier::setA(
+            FZ::SampleInstant instant, FZ::SampleValue value)
     {
         FZ_FORM_EDIT_START
         _a.val = value;
@@ -90,18 +90,18 @@ namespace FreeZtile {
         return this;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setA(FreeZtile::FormPoint a)
+    FZ::CubicBezier* CubicBezier::setA(FZ::FormPoint a)
     {
         return setA(a.ins, a.val);
     }
 
-    FreeZtile::FormPoint CubicBezier::b()
+    FZ::FormPoint CubicBezier::b()
     {
         return _b;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setB(
-            FreeZtile::SampleInstant instant, FreeZtile::SampleValue value)
+    FZ::CubicBezier* CubicBezier::setB(
+            FZ::SampleInstant instant, FZ::SampleValue value)
     {
         FZ_FORM_EDIT_START
         _b.val = value;
@@ -112,7 +112,7 @@ namespace FreeZtile {
         return this;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setB(FreeZtile::FormPoint b)
+    FZ::CubicBezier* CubicBezier::setB(FZ::FormPoint b)
     {
         return setB(b.ins, b.val);
     }
@@ -122,7 +122,7 @@ namespace FreeZtile {
         return _tolerance;
     }
 
-    FreeZtile::CubicBezier* CubicBezier::setTolerance(float tolerance)
+    FZ::CubicBezier* CubicBezier::setTolerance(float tolerance)
     {
         FZ_FORM_EDIT_START
         _tolerance = std::min(0.5f, std::max(FLT_MIN*2, tolerance));
@@ -131,9 +131,9 @@ namespace FreeZtile {
     }
 
     void CubicBezier::_apply(
-            const FreeZtile::SampleInstant inInstants[],
-            FreeZtile::SampleValue outValues[],
-            unsigned int size)
+            const FZ::SampleInstant inInstants[],
+            FZ::SampleValue         outValues[],
+            unsigned int            size)
     {
         float   t,
                 t2,     // pow(t, 2)

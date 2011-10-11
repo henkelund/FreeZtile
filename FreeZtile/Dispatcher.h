@@ -32,25 +32,40 @@
 #include <map>
 #include <vector>
 
-namespace FreeZtile {
+namespace FZ {
+
+    struct Subscription
+    {
+        const void *publisher;
+    };
 
     struct Event
     {
-        Event(const char* id, const void *sender, const void *data) :
-            id(id), sender(sender), data(data)
+        Event(
+            const char              *id,
+            const void              *sender,
+            const void              *data,
+            const FZ::Subscription  *subscription) :
+            id(id),
+            sender(sender),
+            data(data),
+            subscription(subscription)
         {}
-        const char *id;
-        const void *sender, *data;
+        const char              *id;
+        const void              *sender;
+        const void              *data;
+        const FZ::Subscription  *subscription;
     };
 
     class Subscriber
     {
     public:
+
         /**
          *
-         * @param FreeZtile::Event*
+         * @param FZ::Event*
          */
-        virtual void recieve(const FreeZtile::Event *event) = 0;
+        virtual void recieve(const FZ::Event *event) = 0;
     };
 
     class Dispatcher
@@ -60,16 +75,24 @@ namespace FreeZtile {
         /**
          *
          * @param const char*
-         * @param FreeZtile::Subscriber*
+         * @param FZ::Subscriber*
+         * @param const void*
          */
-        static void subscribe(const char *id, FreeZtile::Subscriber *subscriber);
+        static void subscribe(
+                        const char      *id,
+                        FZ::Subscriber  *subscriber,
+                        const void      *publisher = NULL);
 
         /**
          *
-         * @param FreeZtile::Subscriber*
+         * @param FZ::Subscriber*
          * @param const char*
+         * @param const void*
          */
-        static void unsubscribe(FreeZtile::Subscriber *subscriber, const char *id = NULL);
+        static void unsubscribe(
+                        FZ::Subscriber  *subscriber,
+                        const char      *id = NULL,
+                        const void      *publisher = NULL);
 
         /**
          *
@@ -77,7 +100,10 @@ namespace FreeZtile {
          * @param void*
          * @param void*
          */
-        static void dispatch(const char *id, const void *sender, const void *data = NULL);
+        static void dispatch(
+                        const char *id,
+                        const void *publisher,
+                        const void *data = NULL);
 
     private:
 
