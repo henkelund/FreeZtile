@@ -30,31 +30,32 @@
 
 namespace FZ {
 
-    std::map<const char*, std::vector<Subscriber*> > Dispatcher::_subscribers;
+    std::map<const char*, std::vector<Subscription> > Dispatcher::_subscriptions;
 
     void Dispatcher::subscribe(
             const char *id, FZ::Subscriber *subscriber, const void *publisher)
     {
-        std::vector<Subscriber*>::iterator it;
-        for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
-            if ((*it) == subscriber) {
-                // listener already added
+        std::vector<Subscription>::iterator it;
+        for (it = _subscriptions[id].begin(); it != _subscriptions[id].end(); ++it) {
+            if ((*it).publisher == publisher && (*it).subscriber == subscriber) {
+                // subscription already added
                 return;
             }
         }
-        _subscribers[id].push_back(subscriber);
+        _subscriptions[id].push_back(Subscription(publisher, subscriber));
     }
 
     void Dispatcher::unsubscribe(
             FZ::Subscriber *subscriber, const char *id, const void *publisher)
     {
-        std::map<const char*, std::vector<Subscriber*> >::iterator it;
-        for (it = _subscribers.begin(); it != _subscribers.end(); ++it) {
+        std::map<const char*, std::vector<Subscription> >::iterator it;
+        for (it = _subscriptions.begin(); it != _subscriptions.end(); ++it) {
 
             if (id == NULL || id == it->first) {
-                std::vector<Subscriber*>::iterator subIt = it->second.begin();
+                std::vector<Subscription>::iterator subIt = it->second.begin();
                 while (subIt != it->second.end()) {
-                    if (*subIt == subscriber) {
+                    if ((*subIt).subscriber == subscriber &&
+                            (publisher == NULL || (*subIt).publisher == publisher)) {
                         subIt = it->second.erase(subIt);
                     } else {
                         ++subIt;
@@ -66,10 +67,12 @@ namespace FZ {
 
     void Dispatcher::dispatch(const char *id, const void *publisher, const void *data)
     {
-        Event event(id, publisher, data, NULL);
-        std::vector<Subscriber*>::iterator it;
-        for (it = _subscribers[id].begin(); it != _subscribers[id].end(); ++it) {
-            (*it)->recieve(&event);
+        Event event(id, publisher, data);
+        std::vector<Subscription>::iterator it;
+        for (it = _subscriptions[id].begin(); it != _subscriptions[id].end(); ++it) {
+            if ((*it).publisher == publisher || (*it).publisher == NULL) {
+                (*it).subscriber->recieve(&event);
+            }
         }
     }
 

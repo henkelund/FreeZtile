@@ -34,27 +34,14 @@
 
 namespace FZ {
 
-    struct Subscription
-    {
-        const void *publisher;
-    };
-
     struct Event
     {
-        Event(
-            const char              *id,
-            const void              *sender,
-            const void              *data,
-            const FZ::Subscription  *subscription) :
-            id(id),
-            sender(sender),
-            data(data),
-            subscription(subscription)
+        Event(const char *id, const void *sender, const void *data) :
+            id(id), sender(sender), data(data)
         {}
-        const char              *id;
-        const void              *sender;
-        const void              *data;
-        const FZ::Subscription  *subscription;
+        const char *id;
+        const void *sender;
+        const void *data;
     };
 
     class Subscriber
@@ -66,6 +53,15 @@ namespace FZ {
          * @param FZ::Event*
          */
         virtual void recieve(const FZ::Event *event) = 0;
+    };
+
+    struct Subscription
+    {
+        Subscription(const void *publisher, FZ::Subscriber *subscriber) :
+            publisher(publisher), subscriber(subscriber)
+        {}
+        const void      *publisher;
+        FZ::Subscriber  *subscriber;
     };
 
     class Dispatcher
@@ -111,7 +107,7 @@ namespace FZ {
          *
          * @var std::map<const char*, std::vector<Subscriber*> >
          */
-        static std::map<const char*, std::vector<Subscriber*> > _subscribers;
+        static std::map<const char*, std::vector<Subscription> > _subscriptions;
     };
 
 }

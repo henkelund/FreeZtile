@@ -39,7 +39,6 @@ namespace FZ {
         _instantsBuffer(NULL),
         _instantsBufferSize(0)
     {
-        Dispatcher::subscribe(Form::EVENT_FORM_EDIT_END, this);
     }
 
     BezierList::~BezierList()
@@ -70,6 +69,7 @@ namespace FZ {
         );
         _curveShares.insert(_curveShares.begin() + index, 1.f/size());
         _syncHandles(index, false);
+        Dispatcher::subscribe(Form::EVENT_FORM_EDIT_END, this, curve);
         FZ_FORM_EDIT_END
         return curve;
     }
@@ -91,7 +91,11 @@ namespace FZ {
         if ((index = _childIndex(event->sender)) >= 0) {
 
             if (event->id == Form::EVENT_FORM_EDIT_END) {
-                _invalidateCache();
+                FZ_FORM_EDIT_START
+                Dispatcher::unsubscribe(this, Form::EVENT_FORM_EDIT_END, event->sender);
+                _syncHandles(index);
+                Dispatcher::subscribe(Form::EVENT_FORM_EDIT_END, this, event->sender);
+                FZ_FORM_EDIT_END
             }
         }
     }
